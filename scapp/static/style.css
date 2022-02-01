@@ -1,0 +1,121 @@
+* {
+	box-sizing: border-box; 
+}
+body {
+	margin: 0;
+	font-family: Verdana, sans-serif;
+}
+header {
+	color: #3b5998;
+	text-align: center;
+}
+h1 {
+	display: inline;
+	font-size: 5rem;
+}
+
+main {
+	display: flex;
+	align-items: center;
+    justify-content: center;
+    flex-direction: column;
+	min-height: calc(100vh - 30vh);
+}
+
+header, footer, article, nav, aside {
+	padding: 1em;
+}
+header {
+	height: 20vh;
+}
+
+footer {
+	background-color: #F8F8F8;
+	height: 10vh;
+	text-align: center;
+}
+
+form {
+	display: flex;
+	width: 80%;
+	margin-bottom: 20px;
+}
+
+form div {
+	width: 80%;	
+}
+
+.form__label {
+  font-size: 1.2rem;
+  margin-left: 2rem;
+  margin-top: 0.7rem;
+  display: block;
+  transition: all 0.3s;
+  transform: translateY(0rem);
+}
+
+form input[type=button] {
+	background-color: #7096E5;
+	color: #ffffff;
+	padding: 1rem;
+	font-size: 1.2rem;
+	font-weight: bold;
+	height: 100%;
+	border-radius: 0.2rem;
+}
+
+.form__input {
+	color: #333;
+	font-size: 1.2rem;
+	margin: 0 auto;
+	padding: 1.5rem 2rem;
+	border-radius: 0.2rem;
+	width: 90%;
+	display: block;
+	transition: all 0.3s;
+}
+
+.form__input:placeholder-shown + .form__label {
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transform: translateY(-4rem);
+  transform: translateY(-4rem);
+}
+
+.cards {
+	display: flex;
+	justify-content: space-between;
+	/* Put a card in the next row when previous cards take all width */
+	flex-wrap: wrap;
+	width: 70%;
+	margin-left: -8px;
+	margin-right: -8px;
+}
+
+.cards__item {
+	flex-basis: 33%; /* There will be 3 cards per row */
+	padding-left: 8px;
+	padding-right: 8px;
+	
+	text-align: center;
+	margin-bottom: 20px;
+	border-radius: 1rem;
+}
+
+.cards__item .title {
+	border-radius: 0.2rem;
+	padding: 10px 0 10px 0;
+	background-color: #7096E5;
+	color: #ffffff;
+	font-weight: bold;
+}
+
+.cards__item .model {
+	padding: 10px 0 10px 0;
+	background-color: #F8F8F8;
+}
+
+.cards__item .score {
+	padding: 10px 0 10px 0;
+	background-color: #F8F8F8;
+}

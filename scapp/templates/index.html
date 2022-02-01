@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+        <title>SpamClassifier</title>
+    </head>
+    <body>        
+        <header>
+                <h1>SpamBook</h1><small>&copy;</small>
+                <form action="{{ url_for('index') }}" method="get">
+                    <input type="text" name="myForm">
+                    <input type="submit">
+                </form>
+                {{ data }}
+        </header>
+        <main>   
+            <form>
+                <div>
+                    <input type="text" class="form__input" id="name" placeholder="Prédiction" required="" />
+                    <label for="name" class="form__label">Prédiction</label>
+                </div>
+                <input type="button" value="Go !">
+            </form>
+            <div class="cards">
+                <div class="cards__item">
+                    <div class="title">SVM</div>
+                    <div class="model">Spam</div>
+                    <div class="score">92 %</div>
+                </div>
+                <div class="cards__item">
+                    <div class="title">DecisionTree</div>
+                    <div class="model">Spam</div>
+                    <div class="score">99 %</div>
+                </div>
+                <div class="cards__item">
+                    <div class="title">RandomForest</div>
+                    <div class="model">Spam</div>
+                    <div class="score">99 %</div>
+                </div>
+                <div class="cards__item">
+                    <div class="title">Naives bayes</div>
+                    <div class="model">Ham</div>
+                    <div class="score">70 %</div>
+                </div>
+                <div class="cards__item">
+                    <div class="title">KNeighborsClassifier</div>
+                    <div class="model">Spam</div>
+                    <div class="score">98 %</div>
+                </div>
+                <div class="cards__item">
+                    <div class="title">Neuronal Network</div>
+                    <div class="model">Spam</div>
+                    <div class="score">100 %</div>
+                </div>
+
+            </div>
+        </main>
+        <footer>
+            © 2022 Victorien & Noli
+        </footer>
+        </div>
+
+    </body>
+</html>
