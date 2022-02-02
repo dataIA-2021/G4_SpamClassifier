@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-        <script src="{{ url_for('static', filename='chart.min.js') }}"></script>
+        <link rel="stylesheet" href="style.css" />
+        <script src="chart.min.js"></script>
         <title>SpamClassifier</title>
     </head>
     <body>        
         <header>
-                <h1>SpamBook</h1><small>&copy;</small><img src="{{ url_for('static', filename='sms.png') }}" class="sms" width="64px" height="64px">
+                <h1>SpamBook</h1><small>&copy;</small><img src="sms.png" class="sms" width="64px" height="64px">
         </header>
         <main>   
             <form action="{{ url_for('predict') }}" method="post">
@@ -29,7 +29,7 @@
                                 labels: ['Spam','Ham'],
                                 datasets: [{
                                     label: 'My First Dataset',
-                                    data: [{{ data.proba_spam }},{{ data.proba_ham }}],
+                                    data: [50,50],
                                     backgroundColor: [
                                         'rgb(255, 99, 132)',
                                         'rgb(54, 162, 235)',
@@ -43,14 +43,16 @@
                 <div class="section">
                     <div class="score">
                         <ul style="list-style-type:none;">
-                            <li><img src="{{ url_for('static', filename='quality.png') }}" width="64px" height="64px">Ham&nbsp;<b>{{ data.proba_ham }} %</b></span></li>
-                            <li><img src="{{ url_for('static', filename='trash-can.png') }}" width="64px" height="64px">Spam&nbsp;<b>{{ data.proba_spam }} %</b></li>
-                            <li><img src="{{ url_for('static', filename='forest.png') }}" width="64px" height="64px">RandomForestClassifier&nbsp;<b>98 %</b></li>
+                            <li><img src="quality.png" width="64px" height="64px">Ham&nbsp;<b>75 %</b></span></li>
+                            <li><img src="trash-can.png" width="64px" height="64px">Spam&nbsp;<b>60 %</b></li>
+                            <li><img src="forest.png" width="64px" height="64px">RandomForestClassifier&nbsp;<b>98 %</b></li>
                         </ul>
                     </div>
                     <div class="info">
-                        <h2>{{ data.prediction }}</h2> 
-                        <p>{{ data.text }}</p>
+                        <h2>Spam</h2> 
+                        <p>
+                            communication électronique non sollicitée, en premier lieu via le courrier électronique. Il s'agit en général d'envois en grande quantité effectués à des fins publicitaires.
+                        </p>
                     </div>
                 </div>
             </div>

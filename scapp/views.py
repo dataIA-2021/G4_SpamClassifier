@@ -1,20 +1,25 @@
-from flask import Flask, render_template,request,redirect,url_for
+from flask import Flask, render_template,request,redirect,url_for,jsonify
+from sklearn.metrics import accuracy_score
+import pickle
+import numpy as np
 
 import pandas as pd
 import re
-import string
+#import string
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score,confusion_matrix,classification_report
+#from sklearn.tree import DecisionTreeClassifier
+#from sklearn.ensemble import RandomForestClassifier
+#from sklearn.ensemble import ExtraTreesClassifier
+#from sklearn.metrics import accuracy_score
+#from sklearn.metrics import f1_score,confusion_matrix,classification_report
 
 app = Flask(__name__)
-app.config.from_object('config') # Configuration flask
+#app.config.from_object('config') # Configuration flask
+model = pickle.load(open('model.pkl', 'rb'))
+
 
 class Preprocess():
     
@@ -55,7 +60,6 @@ class Preprocess():
         # Preparation des colonnes pour normalisation
         self.column_num = ['length','words_count','uppercases_count','lowercases_count']
         self.transfo_num = Pipeline(steps=[('scaling', MinMaxScaler())])
-        #self.transfo_num = Pipeline(steps=[('imputer',SimpleImputer())])
         
 
     def text_cleaning_encoding(self,text):
@@ -114,74 +118,50 @@ class Preprocess():
     def getTarget(self):
         return self.y
 
-class ModelEvaluation():
+
+@app.route('/')
+def home():
+    data = {
+        'proba_ham' : 50, # ham
+        'proba_spam' : 50, # spam
+        'score' : '98 %' # information de jupyter
+    }
+    return render_template('index.html',data=data)
+
+@app.route('/predict',methods=['POST'])
+def predict():
+    '''
+    For rendering results on HTML GUI
+    '''
+    #int_features = [int(x) for x in request.form.values()]
+    #final_features = [np.array(int_features)]
+    #prediction = model.predict(final_features)
     
-    # constructeur
-    def __init__(self,pipeline,model,listSplit):
-        self.model = model
-        self.pipeline = pipeline
-        self.X_train = listSplit.get('X_train')
-        self.X_test = listSplit.get('X_test')
-        self.y_train = listSplit.get('y_train')
-        self.y_test = listSplit.get('y_test')
-        self.addStepModel()
-        self.fitModel()
-        self.predict(self.X_test)
-        
-    def addStepModel(self):
-        self.pipeline.steps.append(['model',self.model])
-        print(self.pipeline)
-        
-    def fitModel(self):
-        self.pipeline.fit(self.X_train, self.y_train)
+    df_predict = pd.DataFrame()
+    df_predict['text'] = [request.form.get('message')]
+    print('texte = ',df_predict['text'])
+    preprocess = Preprocess(df_predict)
+    X = preprocess.getFeatures()
+    prediction = model.predict(X)
+    probability = model.predict_proba(X)
     
-    def predict(self,X_test):
-        self.y_pred = self.pipeline.predict(X_test)
-        
-    def predict_proba(self,X_test):
-        print(self.pipeline.predict_proba(X_test)) 
-        
-    def getScore(self):
-        self.score = accuracy_score(self.y_test, self.y_pred)
-        return round(self.score, 5)
-        
-    def getTargetPred(self):
-        return self.y_pred
+    if prediction == 0:
+        strPrediction = 'Ham'
+        textPrediction = 'communication désirée en comparaison du spam qui lui est clairement indésirable'
+    else:
+        strPrediction = 'Spam'
+        textPrediction = 'communication électronique non sollicitée, en premier lieu via le courrier électronique. Il s\'agit en général d\'envois en grande quantité effectués à des fins publicitaires.'
     
-    def getModel(self):
-        return self.model
-
-
-df = pd.read_csv('spam.csv',encoding = "latin-1")
-# Nettoyage du dataframe
-df.drop(['Unnamed: 2', 'Unnamed: 3','Unnamed: 4'],axis=1,inplace=True)
-df.rename(columns={"v1": "target", "v2": "text"},inplace=True)
-df.drop_duplicates(inplace=True) # Suppression des doublons
-preproc = Preprocess(df)
-df = preproc.getDf()
-X = preproc.getFeatures()
-y = preproc.getTarget()
-pipeline = preproc.getPipeline()
-
-# Preparation pour entrainement
-X_train, X_test, y_train, y_test = train_test_split(X, y,stratify=y, test_size=0.2, random_state=42)
-
-listSplit = {
-    'X_train' : X_train,
-    'X_test' : X_test,
-    'y_train' : y_train,
-    'y_test' : y_test
-}
-
-DecisionTree = ModelEvaluation(pipeline,RandomForestClassifier(),listSplit)
-
-score = DecisionTree.getScore()
-
-@app.route('/', methods=['GET'])
-def index():
-    form = request.args.get('myForm')
-    return render_template('index.html', data=score)
+    data = {
+        'proba_ham' : int(probability[0][0] * 100), # ham
+        'proba_spam' : int(probability[0][1] * 100), # spam
+        'score' : '98 %', # information de jupyter
+        'prediction' : strPrediction,
+        'text' : textPrediction
+    }
     
+    return render_template('index.html', data=data)
+
 if __name__ == "__main__":
     app.run()
     
