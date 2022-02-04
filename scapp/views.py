@@ -10,9 +10,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-#from sklearn.tree import DecisionTreeClassifier
-#from sklearn.ensemble import RandomForestClassifier
-#from sklearn.ensemble import ExtraTreesClassifier
+from sklearn.ensemble import RandomForestClassifier
 #from sklearn.metrics import accuracy_score
 #from sklearn.metrics import f1_score,confusion_matrix,classification_report
 
@@ -119,6 +117,53 @@ class Preprocess():
         return self.y
 
 
+class ModelEvaluation():
+    
+    # constructeur
+    def __init__(self,pipeline,model):
+        self.model = model
+        self.pipeline = pipeline
+        self.addStepModel()
+        self.fitModel()
+        self.predict(X_test)
+        self.showScore()
+        
+    def addStepModel(self):
+        self.pipeline.steps.append(['model',self.model])
+        print(self.pipeline)
+        
+    def fitModel(self):
+        self.pipeline.fit(X_train, y_train)
+    
+    def predict(self,X_test):
+        self.y_pred = self.pipeline.predict(X_test)
+        
+    def predict_proba(self,X_test):
+        print(self.pipeline.predict_proba(X_test)) 
+        
+    def showScore(self):
+        self.score = accuracy_score(y_test, self.y_pred)
+        print(self.model,"score :", round(self.score, 5))
+        
+    def getTargetPred(self):
+        return self.y_pred
+    
+    def getPipeline(self):
+        return self.pipeline
+    
+# jeu d'entrainement
+df = pd.read_csv('spam.csv',encoding = "latin-1")
+df.drop(['Unnamed: 2', 'Unnamed: 3','Unnamed: 4'],axis=1,inplace=True)
+df.rename(columns={"v1": "target", "v2": "text"},inplace=True)
+df.drop_duplicates(inplace=True) # Suppression des doublons
+preproc = Preprocess(df)
+df = preproc.getDf()
+X = preproc.getFeatures()
+y = preproc.getTarget()
+pipeline = preproc.getPipeline()
+X_train, X_test, y_train, y_test = train_test_split(X, y,stratify=y, test_size=0.2, random_state=42)
+RandomForest = ModelEvaluation(pipeline,RandomForestClassifier())
+
 @app.route('/')
 def home():
     data = {
@@ -133,9 +178,6 @@ def predict():
     '''
     For rendering results on HTML GUI
     '''
-    #int_features = [int(x) for x in request.form.values()]
-    #final_features = [np.array(int_features)]
-    #prediction = model.predict(final_features)
     
     df_predict = pd.DataFrame()
     df_predict['text'] = [request.form.get('message')]
@@ -161,6 +203,46 @@ def predict():
     }
     
     return render_template('index.html', data=data)
+
+@app.route('/game.html')
+def init():
+    
+    data = {
+        'answer' : 'IA : J\'ai envie d\'apprendre ! Rentrer votre sms..' 
+    }
+    
+    return render_template('game.html', data=data)
+
+@app.route('/game.html/training',methods=['POST'])
+def training():
+    
+    df_predict = pd.DataFrame()
+    df_predict['text'] = [request.form.get('message')]
+    print('texte = ',df_predict['text'])
+    preprocess = Preprocess(df_predict)
+    X = preprocess.getFeatures()
+    prediction = model.predict(X)
+    probability = model.predict_proba(X)
+    
+    if prediction == 0:
+        strPrediction = 'Je pense que c\'est un ham ?'
+    else:
+        strPrediction = 'Je pense que c\'est un spam ?' 
+
+    data = {
+        'answer' : strPrediction 
+    }
+    
+    return render_template('game.html', data=data)
+
+@app.route('/game.html/update',methods=['POST'])
+def update():
+    
+    data = {
+        'answer' : request.form.get('True')
+    }
+    
+    return render_template('game.html', data=data)
 
 if __name__ == "__main__":
     app.run()

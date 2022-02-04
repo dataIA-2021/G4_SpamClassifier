@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css" />
+        <title>SpamClassifier</title>
+    </head>
+    <body>        
+        <header>
+                <h1>SpamBook</h1><small>&copy;</small><img src="sms.png" class="sms" width="64px" height="64px">
+        </header>
+        <main>   
+            <form action="{{ url_for('predict') }}" method="post">
+                <div>
+                    <input type="text" class="form__input" name="message" placeholder="Jouer avec l'IA" />
+                    <label for="name" class="form__label">Jouer avec l'IA</label>
+                </div>
+                <input type="submit" value="Go !">
+            </form>
+            
+            <div class="container">
+                <div class="section">
+                    <span class="answer">IA : J'ai envie d'apprendre ! Rentrer votre sms..</span>
+                </div>
+                <div class="section">
+                    <div class="choice">
+                        <input type="submit" class="true" value="Oui">
+                        <input type="submit" class="false" value="Non">
+                    </div>
+                    <div class="info">
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            © 2022 Victorien & Noli
+        </footer>
+        </div>
+    </body>
+</html>

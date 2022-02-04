@@ -137,3 +137,25 @@ li img {
 .sms {
   position: absolute;
 }
+
+.answer {
+	font-weight: bold;
+}
+
+.choice input[type=submit] {
+	
+	color: #ffffff;
+	padding: 1rem;
+	font-size: 1.2rem;
+	font-weight: bold;
+	height: 100%;
+	border-radius: 0.5rem;
+}
+
+.choice .true {
+	background-color: #22B339;
+}
+
+.choice .false {
+	background-color: #FF6384;
+}
