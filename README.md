@@ -1,5 +1,6 @@
 # G4_SpamClassifier
 Classification de SMS
 
-App web :
-[Link to Google](http://victorien.pythonanywhere.com)
+[App web flask](http://victorien.pythonanywhere.com)
+
+Merci !
